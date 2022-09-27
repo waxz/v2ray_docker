@@ -1,0 +1,50 @@
+version: '2'
+
+
+services:
+  v2raya:
+    image: mzz2017/v2raya   
+    security_opt: # options needed for gdb debugging
+      - seccomp:unconfined
+      - apparmor:unconfined   
+
+    container_name : v2raya
+    network_mode: "host"
+
+
+    cap_add:
+      - ALL
+      
+    environment:
+      - PYTHONUSERBASE=/home/waxz/pt_deps
+      #- http_proxy="" #ok no need to map port
+      #- https_proxy="" #ok no need to map port
+      #- http_proxy=http://127.0.0.1:8889     #ok no need to map port
+      #- https_proxy=http://127.0.0.1:8889    #ok no need to map port
+      - RACK_ENV=development
+      - SHOW=true
+      - QT_X11_NO_MITSHM=1
+      - DISPLAY=$DISPLAY
+      #- "ROS_MASTER_URI=http://subt-123:11311" #
+      - "ROS_MASTER_URI=http://172.16.238.10:11311"
+      - "V2RAYA_ADDRESS=0.0.0.0:2017"
+    volumes:
+      - /lib/modules:/lib/modules:ro 
+      - /etc/resolv.conf:/etc/resolv.conf
+      - /etc/v2raya:/etc/v2raya 
+      - /etc/localtime:/etc/localtime
+
+
+    #entrypoint: /opt/shell/entrypoint_coder.sh
+    #command : "sudo v2raya --reset-password"
+    stop_signal: SIGKILL
+    pid: "host"
+    ipc: host
+    privileged: true
+    read_only: false
+    stdin_open: true
+    tty: true
+    #networks:
+      #- default
+      
+
